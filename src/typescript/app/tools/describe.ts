@@ -11,6 +11,10 @@ import { AppContext } from '../context';
 import { GovernanceError, NotFoundError } from '../../errors';
 import { handleToolError } from './handleError';
 import { createToolResponse } from './response';
+import { withTimeout, TOOL_TIMEOUT_MS } from './timeout';
+
+// Configurable timeout for the entire describe operation (default: half of tool timeout)
+const DESCRIBE_TIMEOUT_MS = parseInt(process.env.AIRTABLE_DESCRIBE_TIMEOUT_MS || '', 10) || TOOL_TIMEOUT_MS;
 
 type DescribeTableEntry = NonNullable<DescribeOutput['tables']>[number];
 type DescribeFieldEntry = NonNullable<DescribeTableEntry['fields']>[number];
@@ -154,10 +158,17 @@ Use detailLevel to optimize context usage:
           detailLevel
         });
 
-        const [baseInfo, tableInfo] = await Promise.all([
+        // Use sequential calls with timeout to prevent hangs when either call blocks
+        const baseInfo = await withTimeout(
           ctx.airtable.getBase(input.baseId),
-          ctx.airtable.listTables(input.baseId)
-        ]);
+          DESCRIBE_TIMEOUT_MS / 2,
+          'getBase'
+        );
+        const tableInfo = await withTimeout(
+          ctx.airtable.listTables(input.baseId),
+          DESCRIBE_TIMEOUT_MS / 2,
+          'listTables'
+        );
 
         const baseName =
           typeof (baseInfo as any)?.name === 'string'

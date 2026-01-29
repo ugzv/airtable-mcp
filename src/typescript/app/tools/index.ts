@@ -10,6 +10,9 @@ import { registerUpdateTool } from './update';
 import { registerUpsertTool } from './upsert';
 import { registerWebhookTools } from './webhooks';
 
+// Export timeout utilities for use in tool handlers
+export { withTimeout, withToolTimeout, TOOL_TIMEOUT_MS } from './timeout';
+
 export function registerAllTools(server: McpServer, ctx: AppContext): void {
   registerListBasesTool(server, ctx);
   registerDescribeTool(server, ctx);

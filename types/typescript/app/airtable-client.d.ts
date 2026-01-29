@@ -18,6 +18,7 @@ interface ClientOptions {
     userAgent: string;
     patHash: string;
     maxRetries?: number;
+    httpTimeoutMs?: number;
 }
 export declare class AirtableClient {
     private readonly baseLimiter;
@@ -27,6 +28,7 @@ export declare class AirtableClient {
     private readonly pat;
     private readonly patHash;
     private readonly maxRetries;
+    private readonly httpTimeoutMs;
     constructor(personalAccessToken: string, options: ClientOptions);
     listBases(): Promise<{
         bases: unknown[];

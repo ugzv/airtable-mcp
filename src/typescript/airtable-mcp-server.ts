@@ -23,12 +23,19 @@ function buildContext(config: ReturnType<typeof loadConfig>, rootLogger: Logger)
   const baseLimiter = new RateLimiter({ maxRequestsPerSecond: 5 });
   const patLimiter = new RateLimiter({ maxRequestsPerSecond: 50 });
 
+  // Configurable HTTP timeout (default 30s)
+  const httpTimeoutMs = parseInt(process.env.AIRTABLE_HTTP_TIMEOUT_MS || '', 10) || 30_000;
+  // Configurable max retries (default 1 to prevent long hangs)
+  const maxRetries = parseInt(process.env.AIRTABLE_MAX_RETRIES || '', 10) || 1;
+
   const airtable = new AirtableClient(config.auth.personalAccessToken, {
     baseLimiter,
     patLimiter,
     logger: rootLogger.child({ component: 'airtable_client' }),
     userAgent: `airtable-brain-mcp/${config.version}`,
-    patHash: config.auth.patHash
+    patHash: config.auth.patHash,
+    httpTimeoutMs,
+    maxRetries
   });
 
   const governance = new GovernanceService(config.governance);

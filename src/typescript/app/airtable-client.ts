@@ -34,6 +34,7 @@ interface ClientOptions {
   userAgent: string;
   patHash: string;
   maxRetries?: number;
+  httpTimeoutMs?: number;
 }
 
 type AirtableResponse<T> = {
@@ -84,6 +85,7 @@ export class AirtableClient {
   private readonly pat: string;
   private readonly patHash: string;
   private readonly maxRetries: number;
+  private readonly httpTimeoutMs: number;
 
   constructor(personalAccessToken: string, options: ClientOptions) {
     this.pat = personalAccessToken;
@@ -92,7 +94,8 @@ export class AirtableClient {
     this.logger = options.logger;
     this.userAgent = options.userAgent;
     this.patHash = options.patHash;
-    this.maxRetries = options.maxRetries ?? 3;
+    this.maxRetries = options.maxRetries ?? 1;
+    this.httpTimeoutMs = options.httpTimeoutMs ?? 30_000;
   }
 
   async listBases(): Promise<{ bases: unknown[] }> {
@@ -331,7 +334,7 @@ export class AirtableClient {
         );
       });
 
-      request.setTimeout(30_000, () => {
+      request.setTimeout(this.httpTimeoutMs, () => {
         request.destroy();
         reject(
           new InternalServerError('Airtable request timed out', {
