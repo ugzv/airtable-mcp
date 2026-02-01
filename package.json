@@ -1,6 +1,6 @@
 {
-  "name": "@ugzv/airtable-mcp",
-  "version": "3.3.0",
+  "name": "@rashidazarang/airtable-mcp",
+  "version": "3.2.8",
   "description": "Advanced AI-powered Airtable MCP server with TypeScript support, intelligent analytics, predictive modeling, and enterprise automation capabilities",
   "main": "dist/typescript/index.js",
   "exports": {
@@ -63,7 +63,7 @@
   "author": "Rashid Azarang",
   "license": "MIT",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.25.0",
+    "@modelcontextprotocol/sdk": "^1.24.0",
     "dotenv": "^16.0.0",
     "zod": "^4.2.1",
     "zod-to-json-schema": "^3.25.0"
