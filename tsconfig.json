@@ -23,8 +23,7 @@
     "exactOptionalPropertyTypes": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": false,
-    "noUncheckedIndexedAccess": true,
-    "types": ["node"]
+    "noUncheckedIndexedAccess": true
   },
   "include": [
     "src/typescript/**/*"
